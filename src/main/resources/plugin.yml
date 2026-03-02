@@ -1,6 +1,6 @@
 name: ohw-core
 main: net.ohw.menus.CompassMenuPlugin
-version: 1.0.2
+version: 1.0.3(beta-3)
 authors:
   - InyTw
   - ohw Admin Team

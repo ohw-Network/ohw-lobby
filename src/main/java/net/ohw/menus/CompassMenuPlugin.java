@@ -1,10 +1,13 @@
 package net.ohw.menus;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,13 +28,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
 
 public class CompassMenuPlugin extends JavaPlugin implements Listener, PluginMessageListener {
 
@@ -52,7 +54,14 @@ public class CompassMenuPlugin extends JavaPlugin implements Listener, PluginMes
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
         Bukkit.getPluginManager().registerEvents(new HotbarListener(this), this);
         this.getCommand("menu").setExecutor(new MenuCommand(this));
+        
+        Bukkit.getPluginManager().registerEvents(new SpawnSave(this), this);
+        Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
+        Bukkit.getPluginManager().registerEvents(new HotbarListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new SpawnSave(this), this);
 
+        this.getCommand("menu").setExecutor(new MenuCommand(this));
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
