@@ -1,4 +1,4 @@
-name: ohw-core
+name: ohw-lobby
 main: net.ohw.menus.CompassMenuPlugin
 version: 1.0.3(beta-3)
 authors:
