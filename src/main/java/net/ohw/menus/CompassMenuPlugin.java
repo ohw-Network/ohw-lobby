@@ -234,17 +234,34 @@ public void onBlockBreak(BlockBreakEvent e) {
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        // 1. 頻道檢查
         if (!channel.equals("BungeeCord")) return;
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        if (in.readUTF().equals("PlayerCount")) {
-            serverCount.put(in.readUTF(), in.readInt());
+
+        // 2. 基本長度保護，防止讀取空氣
+        if (message.length < 2) return;
+
+        try {
+            ByteArrayDataInput in = ByteStreams.newDataInput(message);
+            String subChannel = in.readUTF(); // 這是讀取第一個 UTF 字串，通常是 "PlayerCount"
+
+            // 3. 判斷子頻道
+            if (subChannel.equals("PlayerCount")) {
+                String serverName = in.readUTF(); // 讀取伺服器名稱 (如 "pvp")
+                int count = in.readInt();         // 讀取人數
+                
+                serverCount.put(serverName, count);
+                // getLogger().info("更新伺服器 " + serverName + " 人數為: " + count); // 測試用
+            }
+        } catch (Exception e) {
+            // 捕獲異常，讓 Log 保持乾淨
+            // getLogger().warning("讀取 Bungee 訊息時出錯: " + e.getMessage());
         }
     }
 
     public static Inventory createCompassMenu(Player p) {
         Inventory inv = Bukkit.createInventory(null, 54, MENU_TITLE);
         for (int i = 0; i < 54; i++) inv.setItem(i, createGrayGlass());
-        inv.setItem(20, createServerItem("pvp", Material.WOOD_SWORD, "點擊進入激戰區"));
+        inv.setItem(20, createServerItem("kbffa", Material.WOOD_SWORD, "點擊進入激戰區"));
         inv.setItem(21, createServerItem("shop", Material.DIAMOND, "購買生存時各種道具物品"));
         inv.setItem(23, createServerItem("bridge", Material.SANDSTONE, "經典 Bridge 遊戲"));
         inv.setItem(24, createServerItem("smp-1", Material.GRASS, "SMP 1"));
